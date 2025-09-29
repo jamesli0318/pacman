@@ -6,22 +6,22 @@ This document breaks down the project specification into 77 detailed, actionable
 
 **For better organization, these tasks have been split into individual phase files:**
 
-📋 **[View All Phase Files →](./tasks/README.md)**
+📋 **[View All Phase Files →](../development/README.md)**
 
 | Phase | File | Tasks | Focus |
 |-------|------|-------|-------|
-| **Phase 1** | [Project Setup](./tasks/Phase1_ProjectSetup.md) | 1-8 | Docker, React, Django |
-| **Phase 2** | [Authentication](./tasks/Phase2_Authentication.md) | 9-21 | JWT, Login, Protected Routes |
-| **Phase 3** | [Core Game Engine](./tasks/Phase3_CoreGameEngine.md) | 22-30 | Canvas, Pacman, Maze |
-| **Phase 4** | [Ghost AI](./tasks/Phase4_GhostAI.md) | 31-38 | AI Algorithms, Pathfinding |
-| **Phase 5** | [Game Logic](./tasks/Phase5_GameLogic.md) | 39-48 | Scoring, Levels, States |
-| **Phase 6** | [UI Components](./tasks/Phase6_UIComponents.md) | 49-51 | Menus, Game UI |
-| **Phase 7** | [Backend API](./tasks/Phase7_BackendAPI.md) | 52-57 | Game Sessions, APIs |
-| **Phase 8** | [Leaderboard](./tasks/Phase8_LeaderboardStats.md) | 58-61 | Rankings, Statistics |
-| **Phase 9** | [Visual Polish](./tasks/Phase9_VisualAudio.md) | 62-66 | Sprites, Animations |
-| **Phase 10** | [Audio Effects](./tasks/Phase10_AudioEffects.md) | 67-71 | Sound, Music, Effects |
-| **Phase 11** | [Performance](./tasks/Phase11_Performance.md) | 72-73 | Optimization, Database |
-| **Phase 12** | [Testing](./tasks/Phase12_Testing.md) | 74-77 | Unit, Integration, E2E |
+| **Phase 1** | [Project Setup](../phases/Phase1_ProjectSetup.md) | 1-8 | Docker, React, Django |
+| **Phase 2** | [Authentication](../phases/Phase2_Authentication.md) | 9-21 | JWT, Login, Protected Routes |
+| **Phase 3** | [Core Game Engine](../phases/Phase3_CoreGameEngine.md) | 22-30 | Canvas, Pacman, Maze |
+| **Phase 4** | [Ghost AI](../phases/Phase4_GhostAI.md) | 31-38 | AI Algorithms, Pathfinding |
+| **Phase 5** | [Game Logic](../phases/Phase5_GameLogic.md) | 39-48 | Scoring, Levels, States |
+| **Phase 6** | [UI Components](../phases/Phase6_UIComponents.md) | 49-51 | Menus, Game UI |
+| **Phase 7** | [Backend API](../phases/Phase7_BackendAPI.md) | 52-57 | Game Sessions, APIs |
+| **Phase 8** | [Leaderboard](../phases/Phase8_LeaderboardStats.md) | 58-61 | Rankings, Statistics |
+| **Phase 9** | [Visual Polish](../phases/Phase9_VisualAudio.md) | 62-66 | Sprites, Animations |
+| **Phase 10** | [Audio Effects](../phases/Phase10_AudioEffects.md) | 67-71 | Sound, Music, Effects |
+| **Phase 11** | [Performance](../phases/Phase11_Performance.md) | 72-73 | Optimization, Database |
+| **Phase 12** | [Testing](../phases/Phase12_Testing.md) | 74-77 | Unit, Integration, E2E |
 
 ---
 

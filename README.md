@@ -61,19 +61,21 @@ docker-compose up --build
 pacman-game/
 ├── frontend/          # React TypeScript application
 ├── backend/           # Django REST API
-├── docs/             # Documentation
-├── tasks/            # Development task breakdown
+├── docs/             # Documentation and task breakdown
+│   ├── planning/     # Project specs and task overview
+│   ├── phases/       # Detailed phase documentation
+│   └── development/  # Development workflow guides
 ├── docker-compose.yml
 └── README.md
 ```
 
 ### Development Workflow
 
-See detailed development tasks in the `tasks/` directory:
-- [Phase 1: Project Setup](./tasks/Phase1_ProjectSetup.md)
-- [Phase 2: Authentication](./tasks/Phase2_Authentication.md)
-- [Phase 3: Core Game Engine](./tasks/Phase3_CoreGameEngine.md)
-- [All Phases](./tasks/README.md)
+See detailed development tasks and documentation:
+- [📖 Documentation Overview](./docs/README.md) - Complete docs index
+- [✅ Phase 1: Project Setup](./docs/phases/Phase1_ProjectSetup.md) - COMPLETED
+- [🚀 Phase 2: Authentication](./docs/phases/Phase2_Authentication.md) - Next
+- [📋 All Phases](./docs/development/README.md) - Complete task breakdown
 
 ### Game Architecture
 
@@ -116,8 +118,8 @@ See detailed development tasks in the `tasks/` directory:
 
 ## Contributing
 
-1. Check the task breakdown in `tasks/` directory
-2. Follow the development rules in `development_rules.md`
+1. Check the task breakdown in `docs/` directory
+2. Follow the development workflow in `docs/development/README.md`
 3. Complete tasks phase by phase with validation
 4. Submit pull requests with clear descriptions
 
@@ -127,7 +129,7 @@ MIT License - see LICENSE file for details
 
 ## Roadmap
 
-- [ ] Phase 1: Project Setup and Docker configuration
+- [x] Phase 1: Project Setup and Docker configuration ✅ COMPLETED
 - [ ] Phase 2: User authentication and protected routes
 - [ ] Phase 3: Core game engine with canvas rendering
 - [ ] Phase 4: Ghost AI implementation
@@ -136,10 +138,10 @@ MIT License - see LICENSE file for details
 - [ ] Phase 7: Backend API integration
 - [ ] Phase 8: Leaderboard and statistics
 - [ ] Phase 9: Visual and audio polish
-- [ ] Phase 10: Performance optimization
-- [ ] Phase 11: Comprehensive testing
-- [ ] Phase 12: Production deployment
+- [ ] Phase 10: Audio effects and music
+- [ ] Phase 11: Performance optimization
+- [ ] Phase 12: Testing and documentation
 
 ## Support
 
-For issues and questions, please refer to the task documentation in the `tasks/` directory or create an issue in the repository.
+For issues and questions, please refer to the task documentation in the `docs/` directory or create an issue in the repository.
