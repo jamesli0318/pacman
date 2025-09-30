@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, AuthTokens, LoginCredentials, RegisterData, AuthContextType } from '../types/auth';
+import { User, AuthTokens, LoginCredentials, RegisterData, AuthContextType, GuestUser } from '../types/auth';
 import apiService from '../utils/api';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -12,6 +12,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [tokens, setTokens] = useState<AuthTokens | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isGuest, setIsGuest] = useState<boolean>(false);
+  const [guestData, setGuestData] = useState<GuestUser | null>(null);
 
   // Initialize auth state from localStorage
   useEffect(() => {
@@ -31,6 +33,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setTokens(null);
         }
       }
+
+      // Check for guest mode
+      const storedGuest = localStorage.getItem('isGuest');
+      const storedGuestData = localStorage.getItem('guestData');
+      if (storedGuest === 'true' && storedGuestData) {
+        try {
+          setIsGuest(true);
+          setGuestData(JSON.parse(storedGuestData));
+        } catch (error) {
+          // Invalid guest data, clear it
+          localStorage.removeItem('isGuest');
+          localStorage.removeItem('guestData');
+        }
+      }
+
       setLoading(false);
     };
 
@@ -77,6 +94,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     apiService.logout();
     setUser(null);
     setTokens(null);
+    setIsGuest(false);
+    setGuestData(null);
+    localStorage.removeItem('isGuest');
+    localStorage.removeItem('guestData');
+  };
+
+  const playAsGuest = (): void => {
+    const guestId = `guest_${Date.now()}`;
+    const guest: GuestUser = {
+      isGuest: true,
+      username: guestId,
+      displayName: 'Guest Player'
+    };
+
+    setIsGuest(true);
+    setGuestData(guest);
+    localStorage.setItem('isGuest', 'true');
+    localStorage.setItem('guestData', JSON.stringify(guest));
   };
 
   const isAuthenticated = !!user && apiService.isAuthenticated();
@@ -85,9 +120,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     tokens,
     loading,
+    isGuest,
+    guestData,
     login,
     register,
     logout,
+    playAsGuest,
     isAuthenticated,
   };
 

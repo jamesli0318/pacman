@@ -19,11 +19,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Protected routes */}
+          {/* Protected routes - allow guests */}
           <Route
             path="/game"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowGuests={true}>
                 <Game />
               </ProtectedRoute>
             }
@@ -31,7 +31,7 @@ function App() {
           <Route
             path="/leaderboard"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowGuests={true}>
                 <Leaderboard />
               </ProtectedRoute>
             }

@@ -5,7 +5,12 @@ import './Auth.css';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, playAsGuest } = useAuth();
+
+  const handleGuestPlay = () => {
+    playAsGuest();
+    navigate('/game');
+  };
 
   const [formData, setFormData] = useState({
     username: '',
@@ -112,6 +117,24 @@ const Login: React.FC = () => {
             <Link to="/register" className="auth-link">
               Register here
             </Link>
+          </p>
+          <p style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #e0e0e0' }}>
+            Or{' '}
+            <button
+              onClick={handleGuestPlay}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#667eea',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                fontSize: 'inherit',
+                padding: 0,
+                fontWeight: '600'
+              }}
+            >
+              continue as guest
+            </button>
           </p>
         </div>
       </div>

@@ -9,6 +9,7 @@ A web-based Pacman game built with React frontend, Django REST API backend, and 
 - 🏆 10 progressive levels with increasing difficulty
 - 🥇 Player ranking and leaderboard system
 - 🔐 User authentication and game session tracking
+- 🎯 **Guest Mode** - Play instantly without registration
 - 📱 Responsive design for desktop and mobile
 
 ## Tech Stack
@@ -53,6 +54,10 @@ docker-compose up --build
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - Admin Panel: http://localhost:8000/admin
+
+4. Play the game:
+- **Guest Mode**: Click "🎮 Play as Guest" on the home page for instant play
+- **Registered User**: Create an account to save your scores and compete on the leaderboard
 
 ## Development
 

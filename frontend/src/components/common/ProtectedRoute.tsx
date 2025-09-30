@@ -4,10 +4,11 @@ import { useAuth } from '../../contexts/AuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactElement;
+  allowGuests?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowGuests = false }) => {
+  const { isAuthenticated, isGuest, loading } = useAuth();
   const location = useLocation();
 
   // Show loading state while checking authentication
@@ -26,8 +27,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  // Redirect to login if not authenticated, preserving the intended destination
-  if (!isAuthenticated) {
+  // Allow access if authenticated OR (guest AND route allows guests)
+  const hasAccess = isAuthenticated || (allowGuests && isGuest);
+
+  // Redirect to login if no access, preserving the intended destination
+  if (!hasAccess) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

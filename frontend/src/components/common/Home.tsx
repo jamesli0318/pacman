@@ -1,9 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Home: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, playAsGuest } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGuestPlay = () => {
+    playAsGuest();
+    navigate('/game');
+  };
 
   return (
     <div style={{
@@ -76,6 +82,30 @@ const Home: React.FC = () => {
             >
               Register
             </Link>
+            <button
+              onClick={handleGuestPlay}
+              style={{
+                padding: '16px 32px',
+                backgroundColor: 'transparent',
+                color: 'white',
+                border: '2px solid rgba(255,255,255,0.5)',
+                borderRadius: '10px',
+                fontSize: '18px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                e.currentTarget.style.borderColor = 'white';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)';
+              }}
+            >
+              🎮 Play as Guest
+            </button>
           </>
         )}
       </div>

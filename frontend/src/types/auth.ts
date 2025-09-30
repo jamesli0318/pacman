@@ -31,12 +31,21 @@ export interface AuthResponse {
   message: string;
 }
 
+export interface GuestUser {
+  isGuest: true;
+  username: string;
+  displayName: string;
+}
+
 export interface AuthContextType {
   user: User | null;
   tokens: AuthTokens | null;
   loading: boolean;
+  isGuest: boolean;
+  guestData: GuestUser | null;
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
+  playAsGuest: () => void;
   isAuthenticated: boolean;
 }

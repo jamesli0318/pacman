@@ -386,4 +386,78 @@ frontend/src/
 - Backend authentication API (Tasks 9-16) ✅
 - Frontend React components (Tasks 17-21) ✅
 
+---
+
+## 🆕 Phase 2 Enhancement: Guest Mode Feature
+
+**📅 Added:** September 30, 2025
+
+### Overview
+Added guest mode functionality to allow users to play without creating an account, while encouraging registration for score persistence.
+
+### Implementation Details
+
+**New Type Definitions**:
+```typescript
+// frontend/src/types/auth.ts
+interface GuestUser {
+  isGuest: true;
+  username: string;      // "guest_{timestamp}"
+  displayName: string;   // "Guest Player"
+}
+```
+
+**AuthContext Enhancements**:
+- ✅ Added `isGuest` state boolean
+- ✅ Added `guestData` state for guest user object
+- ✅ Implemented `playAsGuest()` method
+- ✅ Updated `logout()` to clear guest state
+- ✅ Guest session persists via localStorage
+
+**ProtectedRoute Updates**:
+- ✅ Added `allowGuests` prop to route protection
+- ✅ Access logic: `isAuthenticated || (allowGuests && isGuest)`
+- ✅ Game and Leaderboard routes now allow guest access
+
+**UI Components**:
+- ✅ Home page: "🎮 Play as Guest" button
+- ✅ Login page: "continue as guest" link
+- ✅ Game page: Yellow warning banner for guests
+- ✅ Game page: "Back to Home" button (replaces logout for guests)
+- ✅ Registration CTA links in banner
+
+### Feature Matrix
+
+| Feature | Authenticated | Guest |
+|---------|--------------|-------|
+| Play Game | ✅ | ✅ |
+| View Leaderboard | ✅ | ✅ View-only |
+| Save Scores | ✅ Database | ❌ Not saved |
+| Profile | ✅ | ❌ |
+
+### Files Modified
+```
+frontend/src/
+├── types/auth.ts                    # Added GuestUser interface
+├── contexts/AuthContext.tsx         # Added guest state & methods
+├── components/
+│   ├── common/
+│   │   ├── Home.tsx                # Added guest button
+│   │   ├── Game.tsx                # Added guest banner & navigation
+│   │   └── ProtectedRoute.tsx      # Added allowGuests prop
+│   └── auth/
+│       └── Login.tsx               # Added guest link
+└── App.tsx                         # Updated routes with allowGuests
+```
+
+### Documentation
+- 📄 Created comprehensive guest mode documentation: `/docs/features/GuestMode.md`
+- Details implementation, user flows, testing checklist, future enhancements
+
+### Benefits
+- 🚀 Reduced barrier to entry - instant gameplay
+- 📈 Increased conversion funnel - try before register
+- 💡 Clear value proposition - prompts to save progress
+- 🎯 Better UX - users can evaluate game before committing
+
 **Next Steps:** Begin Phase 3 - Core Game Engine development
