@@ -1,8 +1,13 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { GAME_CONFIG, GameState, Direction, KEYS } from '../../constants/gameConstants';
+import { GAME_CONFIG, GameState, Direction, KEYS, GhostState } from '../../constants/gameConstants';
 import { getMaze } from '../../data/mazes';
 import { MazeRenderer } from '../../utils/mazeRenderer';
 import { Pacman } from '../../entities/Pacman';
+import { Blinky } from '../../entities/Blinky';
+import { Pinky } from '../../entities/Pinky';
+import { Inky } from '../../entities/Inky';
+import { Clyde } from '../../entities/Clyde';
+import { Ghost } from '../../entities/Ghost';
 import './GameBoard.css';
 
 interface GameBoardProps {
@@ -15,11 +20,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mazeRendererRef = useRef<MazeRenderer | null>(null);
   const pacmanRef = useRef<Pacman | null>(null);
+  const ghostsRef = useRef<Ghost[]>([]);
   const [gameState, setGameState] = useState<GameState>(GameState.READY);
-  const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(GAME_CONFIG.INITIAL_LIVES);
+  const [score, setScore] = useState<number>(0);
+  const [lives, setLives] = useState<number>(GAME_CONFIG.INITIAL_LIVES);
   const [powerPelletActive, setPowerPelletActive] = useState(false);
   const powerPelletTimerRef = useRef<number | null>(null);
+  const ghostScoreMultiplierRef = useRef<number>(0);
 
   // Keyboard input handling
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -63,7 +70,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
     }
   }, [gameState]);
 
-  // Initialize maze renderer and Pacman when level changes
+  // Initialize maze renderer, Pacman, and Ghosts when level changes
   useEffect(() => {
     const mazeData = getMaze(level);
     mazeRendererRef.current = new MazeRenderer(mazeData);
@@ -74,6 +81,19 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
       mazeData.playerStart.y
     );
     pacmanRef.current = new Pacman(startPixel.x, startPixel.y, level);
+
+    // Initialize Ghosts at spawn position
+    const ghostSpawnPixel = mazeRendererRef.current.gridToPixel(
+      mazeData.ghostSpawn.x,
+      mazeData.ghostSpawn.y
+    );
+
+    ghostsRef.current = [
+      new Blinky(ghostSpawnPixel.x, ghostSpawnPixel.y, level),
+      new Pinky(ghostSpawnPixel.x + 20, ghostSpawnPixel.y, level),
+      new Inky(ghostSpawnPixel.x - 20, ghostSpawnPixel.y, level),
+      new Clyde(ghostSpawnPixel.x, ghostSpawnPixel.y + 20, level),
+    ];
   }, [level]);
 
   // Set up canvas and event listeners
@@ -115,12 +135,15 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
       mazeRendererRef.current.render(ctx);
     }
 
-    // Render Pacman
+    // Render ghosts
+    ghostsRef.current.forEach(ghost => {
+      ghost.render(ctx);
+    });
+
+    // Render Pacman (on top of ghosts)
     if (pacmanRef.current) {
       pacmanRef.current.render(ctx);
     }
-
-    // TODO: Render ghosts
   };
 
   // Game loop
@@ -157,6 +180,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
 
           // Activate power pellet mode
           setPowerPelletActive(true);
+          ghostScoreMultiplierRef.current = 0; // Reset ghost score multiplier
+
+          // Set all ghosts to frightened state
+          ghostsRef.current.forEach(ghost => {
+            if (ghost.state !== GhostState.EYES) {
+              ghost.setState(GhostState.FRIGHTENED);
+            }
+          });
 
           // Clear existing timer if any
           if (powerPelletTimerRef.current) {
@@ -169,6 +200,12 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
           ];
           powerPelletTimerRef.current = window.setTimeout(() => {
             setPowerPelletActive(false);
+            // Return ghosts to normal state
+            ghostsRef.current.forEach(ghost => {
+              if (ghost.state === GhostState.FRIGHTENED) {
+                ghost.setState(GhostState.NORMAL);
+              }
+            });
           }, duration);
         }
 
@@ -179,8 +216,58 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
         }
       }
 
-      // TODO: Update ghost positions
-      // TODO: Check ghost collisions
+      // Update ghosts
+      if (mazeRendererRef.current && pacmanRef.current) {
+        ghostsRef.current.forEach(ghost => {
+          ghost.update(deltaTime, mazeRendererRef.current!, pacmanRef.current!.x, pacmanRef.current!.y);
+
+          // Check for ghost-Pacman collision
+          if (pacmanRef.current) {
+            const dx = ghost.x - pacmanRef.current.x;
+            const dy = ghost.y - pacmanRef.current.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const collisionDistance = ghost.radius + pacmanRef.current.radius;
+
+            if (distance < collisionDistance) {
+              if (ghost.state === GhostState.FRIGHTENED) {
+                // Eat ghost - award points
+                ghost.setState(GhostState.EYES);
+                const ghostScores = [200, 400, 800, 1600];
+                const points = ghostScores[ghostScoreMultiplierRef.current % 4];
+                setScore(prev => prev + points);
+                ghostScoreMultiplierRef.current++;
+              } else if (ghost.state === GhostState.NORMAL) {
+                // Ghost caught Pacman - lose a life
+                const currentLives = lives - 1;
+                setLives(currentLives);
+
+                if (currentLives <= 0) {
+                  setGameState(GameState.GAME_OVER);
+                  if (onGameOver) onGameOver();
+                } else {
+                  // Reset positions
+                  if (pacmanRef.current && mazeRendererRef.current) {
+                    const mazeData = getMaze(level);
+                    const startPixel = mazeRendererRef.current.gridToPixel(
+                      mazeData.playerStart.x,
+                      mazeData.playerStart.y
+                    );
+                    pacmanRef.current.reset(startPixel.x, startPixel.y);
+                  }
+
+                  // Reset ghosts
+                  ghostsRef.current.forEach(g => g.reset());
+                }
+              }
+            }
+          }
+
+          // Respawn ghost if at spawn as EYES
+          if (ghost.state === GhostState.EYES && ghost.isAtSpawn()) {
+            ghost.setState(GhostState.NORMAL);
+          }
+        });
+      }
 
       // Render
       renderGame(ctx);

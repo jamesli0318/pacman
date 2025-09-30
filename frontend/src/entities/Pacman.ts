@@ -19,7 +19,7 @@ export class Pacman {
   private animationSpeed: number;
 
   // Dimensions
-  private radius: number;
+  public radius: number;
 
   // Level
   private level: number;
