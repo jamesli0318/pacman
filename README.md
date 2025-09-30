@@ -72,10 +72,10 @@ pacman-game/
 ### Development Workflow
 
 See detailed development tasks and documentation:
-- [📖 Documentation Overview](./docs/README.md) - Complete docs index
-- [✅ Phase 1: Project Setup](./docs/phases/Phase1_ProjectSetup.md) - COMPLETED
-- [🚀 Phase 2: Authentication](./docs/phases/Phase2_Authentication.md) - Next
-- [📋 All Phases](./docs/development/README.md) - Complete task breakdown
+- [📖 Documentation Hub](./docs/README.md) - Complete docs index
+- [📊 Development Guide](./docs/development/README.md) - Current progress and phase status
+- [✅ Phase 1-2: Complete](./docs/phases/) - Project setup & authentication done
+- [⏳ Phase 3: Next](./docs/phases/Phase3_CoreGameEngine.md) - Core game engine
 
 ### Game Architecture
 
@@ -129,9 +129,11 @@ MIT License - see LICENSE file for details
 
 ## Roadmap
 
-- [x] Phase 1: Project Setup and Docker configuration ✅ COMPLETED
-- [ ] Phase 2: User authentication and protected routes
-- [ ] Phase 3: Core game engine with canvas rendering
+**Progress: 21/77 tasks (27%)**
+
+- [x] Phase 1: Project Setup and Docker configuration ✅
+- [x] Phase 2: User authentication and protected routes ✅
+- [ ] Phase 3: Core game engine with canvas rendering ⏳
 - [ ] Phase 4: Ghost AI implementation
 - [ ] Phase 5: Game logic and scoring system
 - [ ] Phase 6: UI components and menus
