@@ -18,6 +18,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
   const [gameState, setGameState] = useState<GameState>(GameState.READY);
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(GAME_CONFIG.INITIAL_LIVES);
+  const [powerPelletActive, setPowerPelletActive] = useState(false);
+  const powerPelletTimerRef = useRef<number | null>(null);
 
   // Keyboard input handling
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -141,11 +143,44 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
       // Update Pacman
       if (pacmanRef.current && mazeRendererRef.current) {
         pacmanRef.current.update(deltaTime, mazeRendererRef.current);
+
+        // Check for dot/pellet collection
+        const { gridX, gridY } = pacmanRef.current.getGridPosition();
+        const tile = mazeRendererRef.current.getTileAt(gridX, gridY);
+
+        if (tile === 2) { // DOT
+          mazeRendererRef.current.setTileAt(gridX, gridY, 0); // Remove dot
+          setScore(prev => prev + GAME_CONFIG.SCORE.DOT);
+        } else if (tile === 3) { // POWER_PELLET
+          mazeRendererRef.current.setTileAt(gridX, gridY, 0); // Remove power pellet
+          setScore(prev => prev + GAME_CONFIG.SCORE.POWER_PELLET);
+
+          // Activate power pellet mode
+          setPowerPelletActive(true);
+
+          // Clear existing timer if any
+          if (powerPelletTimerRef.current) {
+            clearTimeout(powerPelletTimerRef.current);
+          }
+
+          // Set timer to deactivate after duration
+          const duration = GAME_CONFIG.TIMING.POWER_PELLET_DURATION[
+            `LEVEL_${Math.min(level, 10)}` as keyof typeof GAME_CONFIG.TIMING.POWER_PELLET_DURATION
+          ];
+          powerPelletTimerRef.current = window.setTimeout(() => {
+            setPowerPelletActive(false);
+          }, duration);
+        }
+
+        // Check if level complete (all dots collected)
+        const remainingDots = mazeRendererRef.current.countRemainingDots();
+        if (remainingDots === 0) {
+          setGameState(GameState.LEVEL_COMPLETE);
+        }
       }
 
       // TODO: Update ghost positions
-      // TODO: Check collisions
-      // TODO: Update score
+      // TODO: Check ghost collisions
 
       // Render
       renderGame(ctx);
@@ -159,8 +194,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
+      if (powerPelletTimerRef.current) {
+        clearTimeout(powerPelletTimerRef.current);
+      }
     };
-  }, [gameState]);
+  }, [gameState, level]);
 
   // Start game
   const startGame = () => {
@@ -185,6 +223,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, onGameOver, onLevelComplet
         <div className="score">Score: {score}</div>
         <div className="level">Level: {level}</div>
         <div className="lives">Lives: {lives}</div>
+        {powerPelletActive && (
+          <div className="power-mode" style={{ color: '#FFB851', fontWeight: 'bold' }}>
+            ⚡ POWER MODE!
+          </div>
+        )}
       </div>
 
       <canvas
