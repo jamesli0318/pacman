@@ -62,6 +62,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'pacman_backend.urls'
 
+# Custom user model
+AUTH_USER_MODEL = 'authentication.Player'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
